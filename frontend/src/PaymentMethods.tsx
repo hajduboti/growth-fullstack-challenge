@@ -96,11 +96,12 @@ export const SET_ACTIVE_PAYMENT_METHOD = gql`
 `;
 
 const ADD_PAYMENT_METHOD = gql`
-  mutation AddPaymentMethod($parentId: Long!, $method: String!) {
-    addPaymentMethod(parentId: $parentId, method: $method) {
+  mutation AddPaymentMethod($parentId: Long!, $method: String!, $createdAt: String!) {
+    addPaymentMethod(parentId: $parentId, method: $method, createdAt: $createdAt) {
       id
       method
       isActive
+      createdAt
     }
   }
 `;
@@ -130,11 +131,21 @@ const PaymentMethods = ({ parentId }: { parentId: number }) => {
     });
   };
 
+  const getFormattedDateTime = (): string => {
+    const now = new Date();
+    const pad = (n: number) => String(n).padStart(2, '0');
+
+    return `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())} ` +
+           `${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())}`;
+  };
+
   const handleAddMethod = (e: React.FormEvent) => {
+    const createdAt = getFormattedDateTime();
+
     e.preventDefault();
     if (newMethod.trim()) {
       addPaymentMethod({
-        variables: { parentId, method: newMethod.trim() },
+        variables: { parentId, method: newMethod.trim(), createdAt },
         refetchQueries: [{ query: GET_PAYMENT_METHODS, variables: { parentId } }],
       }).then(() => {
         setNewMethod("");

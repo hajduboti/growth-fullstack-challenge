@@ -34,14 +34,14 @@ object GraphQLSchema {
     "Mutation",
     fields[ProfileRepository, Unit](
       Field("addPaymentMethod", OptionType(PaymentMethodType),
-        arguments = Argument("parentId", LongType) :: Argument("method", StringType) :: Nil,
+        arguments = Argument("parentId", LongType) :: Argument("method", StringType) :: Argument("createdAt", StringType) :: Nil,
         resolve = ctx => {
           val newMethod = PaymentMethod(
             id = 0,
             parentId = ctx.arg[Long]("parentId"),
             method = ctx.arg[String]("method"),
             isActive = false,
-            createdAt = ""  // Placeholder for createdAt since it's set by the database
+            createdAt = ctx.arg[String]("createdAt") // Placeholder for createdAt since it's set by the database
           )
 
           ctx.ctx.addPaymentMethod(newMethod).map {
