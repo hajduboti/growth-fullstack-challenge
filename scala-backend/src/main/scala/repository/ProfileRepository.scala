@@ -60,11 +60,13 @@ class ProfileRepository(db: Database)(implicit ec: ExecutionContext) {
       .recover { case ex => Left(s"Failed to set active payment method: ${ex.getMessage}") }
   }
 
-  def deletePaymentMethod(parentId: Long, methodName: String): Future[Either[String, Int]] =
-    db.run(paymentMethods.filter(pm => pm.parentId === parentId && pm.method === methodName).delete)
+  def deletePaymentMethod(parentId: Long, methodId: Long): Future[Either[String, Int]] = {
+    db.run(paymentMethods.filter(pm => pm.parentId === parentId && pm.id === methodId).delete)
       .map {
         case rowsDeleted if rowsDeleted > 0 => Right(rowsDeleted)
-        case _ => Left(s"No payment method found with name $methodName for parent $parentId")
+        case _ => Left(s"No payment method found with id $methodId for parent $parentId")
       }
       .recover { case ex => Left(s"Failed to delete payment method: ${ex.getMessage}") }
+  }
+
 }
