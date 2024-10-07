@@ -141,11 +141,31 @@ const PaymentMethods = ({ parentId }: { parentId: number }) => {
     }
   };
 
-  const handleDeleteMethod = (methodId: number) => {
-    deletePaymentMethod({
-      variables: { parentId, methodId },
-      refetchQueries: [{ query: GET_PAYMENT_METHODS, variables: { parentId } }],
-    });
+  const handleDeleteMethod = (methodId: number, methodIsActive: boolean) => {
+    if (methodIsActive) {
+      // Check if there are other payment methods available
+      const otherMethods = data.paymentMethods.filter((method: any) => method.id !== methodId);
+
+      if (otherMethods.length === 0) {
+        // If no other methods are available, prevent deletion
+        alert("You cannot delete the only active payment method. Please add a new payment method first.");
+        return;
+      } else {
+        // If there are other methods, set the first available one as active before deleting
+        handleActivate(otherMethods[0].id)
+          // After setting the new active method, delete the original method
+          deletePaymentMethod({
+            variables: { parentId, methodId },
+            refetchQueries: [{ query: GET_PAYMENT_METHODS, variables: { parentId } }],
+          });
+      }
+    } else {
+      // If the method is not active, just delete it
+      deletePaymentMethod({
+        variables: { parentId, methodId },
+        refetchQueries: [{ query: GET_PAYMENT_METHODS, variables: { parentId } }],
+      });
+    }
   };
 
   return (
@@ -204,7 +224,7 @@ const PaymentMethods = ({ parentId }: { parentId: number }) => {
             )}
             <IconButton
               className={classes.deleteButton}
-              onClick={() => handleDeleteMethod(method.id)}
+              onClick={() => handleDeleteMethod(method.id, method.isActive)}
               size="small"
             >
               <DeleteIcon />
