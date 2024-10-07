@@ -40,3 +40,5 @@ VALUES
   (1, 300.00, '2020-03-01'),
   (1, 400.00, '2020-04-01'),
   (1, 500.00, '2020-05-01');
+
+ALTER TABLE parent_profile.payment_methods ADD created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP;

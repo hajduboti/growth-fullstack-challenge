@@ -36,7 +36,14 @@ object GraphQLSchema {
       Field("addPaymentMethod", OptionType(PaymentMethodType),
         arguments = Argument("parentId", LongType) :: Argument("method", StringType) :: Nil,
         resolve = ctx => {
-          val newMethod = PaymentMethod(0, ctx.arg[Long]("parentId"), ctx.arg[String]("method"), isActive = false)
+          val newMethod = PaymentMethod(
+            id = 0,
+            parentId = ctx.arg[Long]("parentId"),
+            method = ctx.arg[String]("method"),
+            isActive = false,
+            createdAt = ""  // Placeholder for createdAt since it's set by the database
+          )
+
           ctx.ctx.addPaymentMethod(newMethod).map {
             case Right(method) => Some(method)
             case Left(_) => None

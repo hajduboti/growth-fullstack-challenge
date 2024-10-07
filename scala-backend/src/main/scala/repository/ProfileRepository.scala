@@ -18,7 +18,8 @@ class ProfileRepository(db: Database)(implicit ec: ExecutionContext) {
     def parentId = column[Long]("parent_id")
     def method = column[String]("method")
     def isActive = column[Boolean]("is_active")
-    def * = (id, parentId, method, isActive) <> (PaymentMethod.tupled, PaymentMethod.unapply)
+    def createdAt = column[String]("created_at") // Add this line for createdAt
+    def * = (id, parentId, method, isActive, createdAt) <> (PaymentMethod.tupled, PaymentMethod.unapply)
   }
 
   private class InvoicesTable(tag: Tag) extends Table[Invoice](tag, "invoices") {
