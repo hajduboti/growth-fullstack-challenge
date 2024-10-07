@@ -19,7 +19,7 @@ RUN sbt update
 COPY . .
 
 # Expose the port on which the application runs (adjust the port according to your app)
-EXPOSE 9000
+EXPOSE 9001
 
 # Start sbt with file watching
 CMD ["sbt", "~reStart"]

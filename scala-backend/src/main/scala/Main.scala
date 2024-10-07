@@ -45,7 +45,7 @@ object Main extends App with FailFastCirceSupport {
           entity(as[Json]) { json =>
             val queryOpt = json.hcursor.downField("query").as[String]
             val variablesOpt = json.hcursor.downField("variables").focus.getOrElse(Json.obj())
-            
+
             queryOpt match {
               case Right(query) =>
                 QueryParser.parse(query) match {
@@ -63,11 +63,11 @@ object Main extends App with FailFastCirceSupport {
                         }
                     )
 
-                  case Failure(error) => 
+                  case Failure(error) =>
                     complete(BadRequest, Json.obj("error" -> Json.fromString(s"Invalid GraphQL query: ${error.getMessage}")))
                 }
 
-              case Left(error) => 
+              case Left(error) =>
                 complete(BadRequest, Json.obj("error" -> Json.fromString(s"Invalid GraphQL query: ${error.getMessage}")))
             }
           } ~
@@ -81,9 +81,9 @@ object Main extends App with FailFastCirceSupport {
       }
     }
 
-  val bindingFuture = Http().bindAndHandle(route, "0.0.0.0", 9000)
+  val bindingFuture = Http().bindAndHandle(route, "0.0.0.0", 9001)
 
-  println(s"Server online at http://0.0.0.0:9000/")
+  println(s"Server online at http://0.0.0.0:9001/")
   println("Press RETURN to stop...")
   // Keep the application running
   scala.sys.addShutdownHook {

@@ -4,7 +4,7 @@ services:
   scala-backend:
     build: ./scala-backend
     ports:
-      - "9000:9000"
+      - "9001:9001"
     volumes:
       - ./scala-backend:/app:cached
     depends_on:
